@@ -19,4 +19,9 @@ class TrainingCycle extends Model
         'start_date',
         'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
