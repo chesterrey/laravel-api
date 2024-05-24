@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TrainingBlock;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrainingDay extends Model
 {
@@ -25,5 +26,10 @@ class TrainingDay extends Model
     public function trainingBlock()
     {
         return $this->belongsTo(TrainingBlock::class);
+    }
+
+    public function weeks(): HasMany
+    {
+        return $this->hasMany(Week::class);
     }
 }
