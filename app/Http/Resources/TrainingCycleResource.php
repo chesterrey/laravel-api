@@ -18,6 +18,7 @@ class TrainingCycleResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'name' => $this->name,
+            'training_blocks' => $this->trainingBlocks,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
