@@ -39,7 +39,6 @@ class TrainingBlockController extends Controller
         $validator = Validator::make($input, [
             'training_cycle_id' => 'required',
             'weeks' => 'required',
-            'days' => 'required',
             'order' => 'required',
         ]);
 

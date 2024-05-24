@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TrainingCycle;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrainingBlock extends Model
 {
@@ -19,12 +20,16 @@ class TrainingBlock extends Model
     protected $fillable = [
         'training_cycle_id',
         'weeks',
-        'days',
         'order',
     ];
 
     public function trainingCycle()
     {
         return $this->belongsTo(TrainingCycle::class);
+    }
+
+    public function trainingDays(): HasMany
+    {
+        return $this->hasMany(TrainingDay::class);
     }
 }

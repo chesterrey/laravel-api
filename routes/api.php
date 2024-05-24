@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\TrainingCycleController;
 use App\Http\Controllers\API\TrainingBlockController;
+use App\Http\Controllers\API\TrainingDayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,5 @@ Route::group(['prefix' => 'auth'], function () {
 Route::middleware('auth:api')->group(function () {
     Route::resource('training-cycles', TrainingCycleController::class);
     Route::resource('training-blocks', TrainingBlockController::class);
+    Route::resource('training-days', TrainingDayController::class);
 });
