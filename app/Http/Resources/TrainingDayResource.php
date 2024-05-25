@@ -21,6 +21,16 @@ class TrainingDayResource extends JsonResource
             'name' => $this->name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'weeks' => $this->weeks->map(function ($week) {
+                return [
+                    'id' => $week->id,
+                    'week_number' => $week->week_number,
+                    'training_day_id' => $week->training_day_id,
+                    'deload' => $week->deload,
+                    'created_at' => $week->created_at,
+                    'updated_at' => $week->updated_at,
+                ];
+            }),
         ];
     }
 }

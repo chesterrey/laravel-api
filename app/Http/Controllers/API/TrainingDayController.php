@@ -9,6 +9,7 @@ use App\Http\Resources\TrainingDayResource;
 use Illuminate\Http\JsonResponse;
 use App\Models\TrainingBlock;
 use App\Models\TrainingCycle;
+use App\Models\Week;
 use Illuminate\Support\Facades\Validator;
 
 class TrainingDayController extends Controller
@@ -49,6 +50,25 @@ class TrainingDayController extends Controller
         $input['name'] = 'Day ' . $input['day'];
 
         $trainingDay = TrainingDay::create($input);
+
+        $weeks = $trainingBlock->weeks; // weeks = integer
+
+        for ($i = 1; $i <= $weeks; $i++) {
+            if ($i === $weeks) {
+                Week::create([
+                    'week_number' => $i + 1,
+                    'training_day_id' => $trainingDay->id,
+                    'deload' => true,
+                ]);
+            } else {
+                Week::create([
+                    'week_number' => $i,
+                    'training_day_id' => $trainingDay->id,
+                    'deload' => false,
+                ]);
+            }
+        }
+
 
         return $this->sendResponse(new TrainingDayResource($trainingDay), 'Training day created successfully.');
     }
