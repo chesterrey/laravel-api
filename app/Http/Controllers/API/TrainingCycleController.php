@@ -36,4 +36,49 @@ class TrainingCycleController extends Controller
 
         return $this->sendResponse(new TrainingCycleResource($trainingCycle), 'Training Cycle created successfully.');
     }
+
+    public function show($id): JsonResponse
+    {
+        $trainingCycle = TrainingCycle::findOrFail($id);
+
+        if($trainingCycle->user_id !== auth()->id()){
+            return $this->sendError('Unauthorized.', ['You are not authorized to view this training cycle.']);
+        }
+
+        return $this->sendResponse(new TrainingCycleResource($trainingCycle), 'Training Cycle retrieved successfully.');
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $input = $request->all();
+
+        if (!$input['name']) {
+            return $this->sendError('Validation Error.', ['Name is required.']);
+        }
+
+        $trainingCycle = TrainingCycle::findOrFail($id);
+
+        if($trainingCycle->user_id !== auth()->id()){
+            return $this->sendError('Unauthorized.', ['You are not authorized to update this training cycle.']);
+        }
+
+        $trainingCycle->name = $input['name'];
+
+        $trainingCycle->save();
+
+        return $this->sendResponse(new TrainingCycleResource($trainingCycle), 'Training Cycle updated successfully.');
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        $trainingCycle = TrainingCycle::findOrFail($id);
+
+        if($trainingCycle->user_id !== auth()->id()){
+            return $this->sendError('Unauthorized.', ['You are not authorized to delete this training cycle.']);
+        }
+
+        $trainingCycle->delete();
+
+        return $this->sendResponse([], 'Training Cycle deleted successfully.');
+    }
 }

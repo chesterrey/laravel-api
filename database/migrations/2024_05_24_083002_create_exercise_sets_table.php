@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
             $table->integer('set_number');
-            $table->float('load');
-            $table->integer('reps');
-            $table->boolean('logged')->default(0);
+            $table->float('load')->nullable();
+            $table->integer('reps')->nullable();
+            $table->boolean('logged')->default(false);
             $table->timestamps();
         });
     }

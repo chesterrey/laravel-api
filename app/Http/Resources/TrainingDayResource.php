@@ -27,6 +27,23 @@ class TrainingDayResource extends JsonResource
                     'week_number' => $week->week_number,
                     'training_day_id' => $week->training_day_id,
                     'deload' => $week->deload,
+                    'exercises' => $week->exercises->map(function ($exercise) {
+                        return [
+                            'id' => $exercise->id,
+                            'name' => $exercise->name,
+                            'strength' => $exercise->strength,
+                            'rpe' => $exercise->rpe,
+                            'sets' => $exercise->sets->map(function ($set) {
+                                return [
+                                    'id' => $set->id,
+                                    'set_number' => $set->set_number,
+                                    'load' => $set->load,
+                                    'reps' => $set->reps,
+                                    'logged' => $set->logged,
+                                ];
+                            }),
+                        ];
+                    }),
                     'created_at' => $week->created_at,
                     'updated_at' => $week->updated_at,
                 ];

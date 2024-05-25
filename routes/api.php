@@ -7,6 +7,7 @@ use App\Http\Controllers\API\TrainingCycleController;
 use App\Http\Controllers\API\TrainingBlockController;
 use App\Http\Controllers\API\TrainingDayController;
 use App\Http\Controllers\API\ExerciseController;
+use App\Http\Controllers\API\ExerciseSetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,4 +35,5 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('training-blocks', TrainingBlockController::class);
     Route::resource('training-days', TrainingDayController::class);
     Route::resource('exercises', ExerciseController::class);
+    Route::resource('exercise-sets', ExerciseSetController::class);
 });

@@ -72,4 +72,59 @@ class TrainingDayController extends Controller
 
         return $this->sendResponse(new TrainingDayResource($trainingDay), 'Training day created successfully.');
     }
+
+    public function show($id): JsonResponse
+    {
+        $trainingDay = TrainingDay::findOrFail($id);
+
+        $trainingBlock = TrainingBlock::findOrFail($trainingDay->training_block_id);
+        $trainingCycle = TrainingCycle::findOrFail($trainingBlock->training_cycle_id);
+
+        if ($trainingCycle->user_id !== auth()->id()) {
+            return $this->sendError('Unauthorized.', ['You are not authorized to view this training day.']);
+        }
+
+        return $this->sendResponse(new TrainingDayResource($trainingDay), 'Training day retrieved successfully.');
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'name' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $trainingDay = TrainingDay::findOrFail($id);
+        $trainingBlock = TrainingBlock::findOrFail($trainingDay->training_block_id);
+        $trainingCycle = TrainingCycle::findOrFail($trainingBlock->training_cycle_id);
+
+        if ($trainingCycle->user_id !== auth()->id()) {
+            return $this->sendError('Unauthorized.', ['You are not authorized to update this training day.']);
+        }
+
+        $trainingDay->name = $input['name'];
+        $trainingDay->save();
+
+        return $this->sendResponse(new TrainingDayResource($trainingDay), 'Training day updated successfully.');
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        $trainingDay = TrainingDay::findOrFail($id);
+        $trainingBlock = TrainingBlock::findOrFail($trainingDay->training_block_id);
+        $trainingCycle = TrainingCycle::findOrFail($trainingBlock->training_cycle_id);
+
+        if ($trainingCycle->user_id !== auth()->id()) {
+            return $this->sendError('Unauthorized.', ['You are not authorized to delete this training day.']);
+        }
+
+        $trainingDay->delete();
+
+        return $this->sendResponse([], 'Training day deleted successfully.');
+    }
 }

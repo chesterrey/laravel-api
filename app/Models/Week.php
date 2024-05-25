@@ -21,4 +21,9 @@ class Week extends Model
     {
         return $this->belongsTo(TrainingDay::class);
     }
+
+    public function exercises(): HasMany
+    {
+        return $this->hasMany(Exercise::class);
+    }
 }

@@ -50,4 +50,57 @@ class TrainingBlockController extends Controller
 
         return $this->sendResponse(new TrainingBlockResource($trainingBlock), 'Training Block created successfully.');
     }
+
+    public function show($id): JsonResponse
+    {
+        $trainingBlock = TrainingBlock::findOrFail($id);
+
+        // check if user has access to the training cycle
+        $trainingCycle = TrainingCycle::find($trainingBlock->training_cycle_id);
+        if($trainingCycle->user_id != auth()->user()->id){
+            return $this->sendError('Unauthorized.', ['You do not have access to this training cycle.']);
+        }
+
+        return $this->sendResponse(new TrainingBlockResource($trainingBlock), 'Training Block retrieved successfully.');
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'weeks' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $trainingBlock = TrainingBlock::findOrFail($id);
+
+        // check if user has access to the training cycle
+        $trainingCycle = TrainingCycle::find($trainingBlock->training_cycle_id);
+        if($trainingCycle->user_id != auth()->user()->id){
+            return $this->sendError('Unauthorized.', ['You do not have access to this training cycle.']);
+        }
+
+        $trainingBlock->update($input);
+
+        return $this->sendResponse(new TrainingBlockResource($trainingBlock), 'Training Block updated successfully.');
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        $trainingBlock = TrainingBlock::findOrFail($id);
+
+        // check if user has access to the training cycle
+        $trainingCycle = TrainingCycle::find($trainingBlock->training_cycle_id);
+        if($trainingCycle->user_id != auth()->user()->id){
+            return $this->sendError('Unauthorized.', ['You do not have access to this training cycle.']);
+        }
+
+        $trainingBlock->delete();
+
+        return $this->sendResponse([], 'Training Block deleted successfully.');
+    }
 }
