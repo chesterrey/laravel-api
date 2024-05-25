@@ -56,7 +56,7 @@ class TrainingDayController extends Controller
         for ($i = 1; $i <= $weeks; $i++) {
             if ($i === $weeks) {
                 Week::create([
-                    'week_number' => $i + 1,
+                    'week_number' => $i,
                     'training_day_id' => $trainingDay->id,
                     'deload' => true,
                 ]);
