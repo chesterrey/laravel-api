@@ -32,6 +32,7 @@ class TrainingCycleController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
+
         $trainingCycle = TrainingCycle::create($input);
 
         return $this->sendResponse(new TrainingCycleResource($trainingCycle), 'Training Cycle created successfully.');

@@ -17,7 +17,39 @@ class TrainingBlockResource extends JsonResource
         return [
             'id' => $this->id,
             'weeks' => $this->weeks,
-            'training_days' => $this->trainingDays,
+            // training days as array of objects
+            'training_days' => $this->trainingDays->map(function($trainingDay){
+                return [
+                    'id' => $trainingDay->id,
+                    'day' => $trainingDay->day,
+                    'name' => $trainingDay->name,
+                    'weeks' => $trainingDay->weeks->map(function($week){
+                        return [
+                            'id' => $week->id,
+                            'week_number' => $week->week_number,
+                            'deload' => $week->deload,
+                            'exercises' => $week->exercises->map(function($exercise){
+                                return [
+                                    'id' => $exercise->id,
+                                    'name' => $exercise->name,
+                                    'strength' => $exercise->strength,
+                                    'rpe' => $exercise->rpe,
+                                    'sets' => $exercise->sets->map(function($set){
+                                        return [
+                                            'id' => $set->id,
+                                            'reps' => $set->reps,
+                                            'load' => $set->load,
+                                            'logged' => $set->logged,
+                                        ];
+                                    }),
+                                ];
+                            }),
+                            'created_at' => $week->created_at,
+                            'updated_at' => $week->updated_at,
+                        ];
+                    }),
+                ];
+            }),
             'order' => $this->order,
             'training_cycle_id' => $this->training_cycle_id,
             'created_at' => $this->created_at,

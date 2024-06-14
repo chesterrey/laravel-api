@@ -5,8 +5,13 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+
 use App\Models\TrainingBlock;
 use App\Models\TrainingCycle;
+use App\Models\Exercise;
+use App\Models\Week;
+use App\Models\TrainingDay;
+
 use App\Http\Resources\TrainingBlockResource;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,13 +45,52 @@ class TrainingBlockController extends Controller
             'training_cycle_id' => 'required',
             'weeks' => 'required',
             'order' => 'required',
+            'training_days' => 'required',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $trainingBlock = TrainingBlock::create($input);
+        $trainingBlock = TrainingBlock::create(
+            [
+                'training_cycle_id' => $input['training_cycle_id'],
+                'weeks' => $input['weeks'],
+                'order' => $input['order'],
+            ]
+        );
+
+        foreach($input['training_days'] as $trainingDay){
+            $newTrainingDay = $trainingBlock->trainingDays()->create(
+                [
+                    'day' => $trainingDay['day'],
+                    'name' => 'Day ' . $trainingDay['day'],
+                ]
+            );
+
+            for ($i = 1; $i <= $input['weeks']; $i++) {
+                $newWeek = $newTrainingDay->weeks()->create(
+                    [
+                        'week_number' => $i,
+                        'deload' => false,
+                    ]
+                );
+
+                foreach($trainingDay['exercises'] as $exercise){
+                    error_log($exercise['name']);
+                    $newWeek->exercises()->create(
+                        [
+                            'name' => $exercise['name'],
+                            'strength' => $exercise['strength'],
+                            'rpe' => 6,
+                        ]
+                    );
+                }
+            }
+        }
+
+
+
 
         return $this->sendResponse(new TrainingBlockResource($trainingBlock), 'Training Block created successfully.');
     }

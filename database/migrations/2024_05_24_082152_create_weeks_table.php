@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('training_day_id')->constrained()->onDelete('cascade');
             $table->integer('week_number');
-            $table->boolean('deload')->default(0);
+            $table->boolean('deload')->default(false);
             $table->timestamps();
         });
     }

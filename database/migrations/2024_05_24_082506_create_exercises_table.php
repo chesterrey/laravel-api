@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('week_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->boolean('strength')->default(0);
-            $table->integer('rpe');
+            $table->integer('rpe')->nullable();
             $table->timestamps();
         });
     }
