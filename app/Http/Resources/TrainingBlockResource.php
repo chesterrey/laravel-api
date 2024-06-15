@@ -17,6 +17,7 @@ class TrainingBlockResource extends JsonResource
         return [
             'id' => $this->id,
             'weeks' => $this->weeks,
+            'training_cycle' => $this->trainingCycle,
             // training days as array of objects
             'training_days' => $this->trainingDays->map(function($trainingDay){
                 return [
