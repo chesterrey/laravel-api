@@ -92,4 +92,22 @@ class ExerciseController extends Controller
 
         return $this->sendResponse(new ExerciseResource($exercise), 'Exercise updated successfully.');
     }
+
+    public function destroy($id): JsonResponse
+    {
+        $exercise = Exercise::findOrFail($id);
+
+        $week = Week::findOrFail($exercise->week_id);
+        $trainingDay = $week->trainingDay;
+        $trainingBlock = $trainingDay->trainingBlock;
+        $trainingCycle = $trainingBlock->trainingCycle;
+
+        if ($trainingCycle->user_id !== auth()->id()) {
+            return $this->sendError('Unauthorized.', ['You are not authorized to delete this exercise.']);
+        }
+
+        $exercise->delete();
+
+        return $this->sendResponse([], 'Exercise deleted successfully.');
+    }
 }
