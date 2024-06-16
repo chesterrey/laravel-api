@@ -15,7 +15,12 @@ class Exercise extends Model
         'week_id',
         'name',
         'strength',
-        'rpe'
+        'rpe',
+        'muscle_group'
+    ];
+
+    protected $casts = [
+        'strength' => 'boolean',
     ];
 
     public function week(): BelongsTo

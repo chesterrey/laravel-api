@@ -18,6 +18,10 @@ class ExerciseSet extends Model
         'logged',
     ];
 
+    protected $casts = [
+        'logged' => 'boolean',
+    ];
+
     public function exercise(): BelongsTo
     {
         return $this->belongsTo(Exercise::class);

@@ -20,12 +20,14 @@ class WeekResource extends JsonResource
             'training_day_id' => $this->training_day_id,
             'deload' => $this->deload,
             'training_day' => $this->trainingDay->name,
+            'done' => $this->done,
             'exercises' => $this->exercises->map(function ($exercise) {
                 return [
                     'id' => $exercise->id,
                     'name' => $exercise->name,
                     'strength' => $exercise->strength,
                     'rpe' => $exercise->rpe,
+                    'muscle_group' => $exercise->muscle_group,
                     'sets' => $exercise->sets->map(function ($set) {
                         return [
                             'id' => $set->id,

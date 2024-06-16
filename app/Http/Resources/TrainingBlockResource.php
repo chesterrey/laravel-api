@@ -18,7 +18,6 @@ class TrainingBlockResource extends JsonResource
             'id' => $this->id,
             'weeks' => $this->weeks,
             'training_cycle' => $this->trainingCycle,
-            // training days as array of objects
             'training_days' => $this->trainingDays->map(function($trainingDay){
                 return [
                     'id' => $trainingDay->id,
@@ -29,12 +28,14 @@ class TrainingBlockResource extends JsonResource
                             'id' => $week->id,
                             'week_number' => $week->week_number,
                             'deload' => $week->deload,
+                            'done' => $week->done,
                             'exercises' => $week->exercises->map(function($exercise){
                                 return [
                                     'id' => $exercise->id,
                                     'name' => $exercise->name,
                                     'strength' => $exercise->strength,
                                     'rpe' => $exercise->rpe,
+                                    'muscle_group' => $exercise->muscle_group,
                                     'sets' => $exercise->sets->map(function($set){
                                         return [
                                             'id' => $set->id,

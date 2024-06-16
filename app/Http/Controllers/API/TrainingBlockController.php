@@ -73,6 +73,7 @@ class TrainingBlockController extends Controller
                     [
                         'week_number' => $i,
                         'deload' => false,
+                        'done' => false,
                     ]
                 );
 
@@ -81,6 +82,7 @@ class TrainingBlockController extends Controller
                         [
                             'name' => $exercise['name'],
                             'strength' => $exercise['strength'],
+                            'muscle_group' => $exercise['muscle_group'],
                             'rpe' => 6,
                         ]
                     );

@@ -19,6 +19,7 @@ class ExerciseResource extends JsonResource
             'name' => $this->name,
             'strength' => $this->strength,
             'rpe' => $this->rpe,
+            'muscle_group' => $this->muscle_group,
             'sets' => $this->sets->map(function ($set) {
                 return [
                     'id' => $set->id,

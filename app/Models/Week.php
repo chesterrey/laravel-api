@@ -15,6 +15,12 @@ class Week extends Model
         'week_number',
         'training_day_id',
         'deload',
+        'done'
+    ];
+
+    protected $casts = [
+        'deload' => 'boolean',
+        'done' => 'boolean',
     ];
 
     public function trainingDay(): BelongsTo

@@ -64,9 +64,10 @@ class ExerciseController extends Controller
             return $this->sendError('Validation Error.', ['Name, strength, or rpe is required.']);
         }
 
+
         $exercise = Exercise::findOrFail($id);
 
-        $week = Week::findOrFail($input['week_id']);
+        $week = Week::findOrFail($exercise->week_id);
         $trainingDay = $week->trainingDay;
         $trainingBlock = $trainingDay->trainingBlock;
         $trainingCycle = $trainingBlock->trainingCycle;
