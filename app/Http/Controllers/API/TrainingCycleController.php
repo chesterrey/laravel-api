@@ -16,7 +16,7 @@ class TrainingCycleController extends Controller
         // user's training cycles
         $trainingCycles = auth()->user()->trainingCycles;
 
-        return $this->sendResponse(TrainingCycleResource::collection(TrainingCycle::all()), 'Training Cycles retrieved successfully.');
+        return $this->sendResponse(TrainingCycleResource::collection($trainingCycles), 'Training Cycles retrieved successfully.');
     }
 
     public function store(Request $request): JsonResponse
