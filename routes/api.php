@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\TrainingCycleController;
 use App\Http\Controllers\API\TrainingBlockController;
 use App\Http\Controllers\API\TrainingDayController;
+use App\Http\Controllers\API\WeekController;
 use App\Http\Controllers\API\ExerciseController;
 use App\Http\Controllers\API\ExerciseSetController;
 
@@ -31,9 +32,12 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('training-blocks/active', [TrainingBlockController::class, 'active']);
+    Route::post('training-blocks/set-active', [TrainingBlockController::class, 'setActive']);
     Route::resource('training-cycles', TrainingCycleController::class);
     Route::resource('training-blocks', TrainingBlockController::class);
     Route::resource('training-days', TrainingDayController::class);
+    Route::resource('weeks', WeekController::class);
     Route::resource('exercises', ExerciseController::class);
     Route::resource('exercise-sets', ExerciseSetController::class);
 });

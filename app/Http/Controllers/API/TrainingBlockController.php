@@ -159,4 +159,51 @@ class TrainingBlockController extends Controller
 
         return $this->sendResponse([], 'Training Block deleted successfully.');
     }
+
+    public function active(): JsonResponse
+    {
+        $user = auth()->user();
+        try {
+            $trainingBlock = TrainingBlock::findOrFail($user->training_block_id);
+
+            if($trainingBlock){
+                return $this->sendResponse(new TrainingBlockResource($trainingBlock), 'Active Training Block retrieved successfully.');
+            }
+
+        } catch (\Exception $e) {
+            return $this->sendResponse([], 'No active Training Block found.');
+        }
+    }
+
+    public function setActive(Request $request): JsonResponse
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'training_block_id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        try {
+            $trainingBlock = TrainingBlock::findOrFail($input['training_block_id']);
+
+            // check if user has access to the training cycle
+            $trainingCycle = TrainingCycle::find($trainingBlock->training_cycle_id);
+            if($trainingCycle->user_id != auth()->user()->id){
+                return $this->sendError('Unauthorized.', ['You do not have access to this training cycle.']);
+            }
+
+            $user = auth()->user();
+            $user->training_block_id = $trainingBlock->id;
+            $user->save();
+
+            return $this->sendResponse(new TrainingBlockResource($trainingBlock), 'Active Training Block set successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Not Found.', ['Training Block not found.']);
+        }
+
+    }
 }

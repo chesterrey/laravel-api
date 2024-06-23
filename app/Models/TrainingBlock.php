@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\TrainingCycle;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\User;
 
 class TrainingBlock extends Model
 {
@@ -31,5 +32,10 @@ class TrainingBlock extends Model
     public function trainingDays(): HasMany
     {
         return $this->hasMany(TrainingDay::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

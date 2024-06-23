@@ -16,6 +16,7 @@ class TrainingBlockResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user' => $this->user,
             'weeks' => $this->weeks,
             'training_cycle' => $this->trainingCycle,
             'training_days' => $this->trainingDays->map(function($trainingDay){
@@ -26,6 +27,7 @@ class TrainingBlockResource extends JsonResource
                     'weeks' => $trainingDay->weeks->map(function($week){
                         return [
                             'id' => $week->id,
+                            'day' => $week->trainingDay->day,
                             'week_number' => $week->week_number,
                             'deload' => $week->deload,
                             'done' => $week->done,

@@ -19,7 +19,7 @@ class ExerciseSet extends Model
     ];
 
     protected $casts = [
-        'logged' => 'boolean',
+      'logged' => 'boolean',
     ];
 
     public function exercise(): BelongsTo
