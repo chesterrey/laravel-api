@@ -19,13 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        '*',
-        'http://localhost:5137',
-        'vue-app-sage.vercel.app',
-        'https://strength-training.xyz',
-        'https://www.strength-training.xyz',
-    ],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
