@@ -25,6 +25,9 @@ use App\Http\Controllers\API\ExerciseSetController;
 //     return $request->user();
 // });
 
+Route::get('/test', function () {
+    return response()->json(['message' => 'Hello World!']);
+});
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', [AuthController::class, 'register']);
