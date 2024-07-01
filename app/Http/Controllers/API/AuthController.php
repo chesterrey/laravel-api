@@ -13,24 +13,29 @@ class AuthController extends Controller
 {
     public function register(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|confirmed',
-            'password_confirmation' => 'required|string'
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string',
+                'email' => 'required|string|email|unique:users',
+                'password' => 'required|string|confirmed',
+                'password_confirmation' => 'required|string'
+            ]);
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 409);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 409);
+            }
+
+            $input = $request->all();
+            $input['password'] = bcrypt($input['password']);
+            $user = User::create($input);
+            $success['token'] = $user->createToken('MyApp')->accessToken;
+            $success['name'] = $user->name;
+
+            return $this->sendResponse($success, 'User registered successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Internal Server Error.', ['error' => $e->getMessage()], 500);
         }
 
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] = $user->createToken('MyApp')->accessToken;
-        $success['name'] = $user->name;
-
-        return $this->sendResponse($success, 'User registered successfully.');
     }
 
     public function login(Request $request): JsonResponse
