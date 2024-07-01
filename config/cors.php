@@ -22,7 +22,9 @@ return [
     'allowed_origins' => [
         '*',
         'http://localhost:5137',
-        'vue-app-sage.vercel.app'
+        'vue-app-sage.vercel.app',
+        'https://strength-training.xyz',
+        'https://www.strength-training.xyz',
     ],
 
     'allowed_origins_patterns' => [],
