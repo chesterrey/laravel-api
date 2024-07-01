@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*', 'http://localhost:5137'],
+    'allowed_origins' => [
+        '*',
+        'http://localhost:5137',
+        'vue-app-sage.vercel.app'
+    ],
 
     'allowed_origins_patterns' => [],
 
