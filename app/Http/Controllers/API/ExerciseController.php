@@ -88,6 +88,10 @@ class ExerciseController extends Controller
             $exercise->rpe = $input['rpe'];
         }
 
+        if (isset($input['muscle_group'])) {
+            $exercise->muscle_group = $input['muscle_group'];
+        }
+
         $exercise->save();
 
         return $this->sendResponse(new ExerciseResource($exercise), 'Exercise updated successfully.');
