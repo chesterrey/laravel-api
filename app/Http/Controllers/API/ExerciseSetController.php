@@ -80,11 +80,19 @@ class ExerciseSetController extends Controller
         }
 
         if (isset($input['load'])) {
-            $exerciseSet->load = $input['load'];
+            if ($input['load'] > 0) {
+                $exerciseSet->load = null;
+            } else {
+                $exerciseSet->load = $input['load'];
+            }
         }
 
         if (isset($input['reps'])) {
-            $exerciseSet->reps = $input['reps'];
+            if ($input['reps'] > 0) {
+                $exerciseSet->reps = null;
+            } else {
+                $exerciseSet->reps = $input['reps'];
+            }
         }
 
         if (isset($input['logged'])) {
