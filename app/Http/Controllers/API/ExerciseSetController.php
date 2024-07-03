@@ -80,7 +80,7 @@ class ExerciseSetController extends Controller
         }
 
         if (isset($input['load'])) {
-            if ($input['load'] > 0) {
+            if ($input['load'] < 0) {
                 $exerciseSet->load = null;
             } else {
                 $exerciseSet->load = $input['load'];
@@ -88,7 +88,7 @@ class ExerciseSetController extends Controller
         }
 
         if (isset($input['reps'])) {
-            if ($input['reps'] > 0) {
+            if ($input['reps'] < 0) {
                 $exerciseSet->reps = null;
             } else {
                 $exerciseSet->reps = $input['reps'];
