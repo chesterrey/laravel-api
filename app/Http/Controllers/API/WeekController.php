@@ -16,18 +16,13 @@ class WeekController extends Controller
      */
     public function index()
     {
-        //
-        $weeks = Week::all();
+        try {
+            $weeks = Week::all();
 
-        return $this->sendResponse(WeekResource::collection($weeks), 'Weeks retrieved successfully.');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+            return $this->sendResponse(WeekResource::collection($weeks), 'Weeks retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while retrieving weeks.', $e->getMessage());
+        }
     }
 
     /**
@@ -35,9 +30,13 @@ class WeekController extends Controller
      */
     public function show($id)
     {
-        $week = Week::findOrFail($id);
+        try {
+            $week = Week::findOrFail($id);
 
-        return $this->sendResponse(new WeekResource($week), 'Week retrieved successfully.');
+            return $this->sendResponse(new WeekResource($week), 'Week retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while retrieving week.', $e->getMessage());
+        }
     }
 
     /**
@@ -45,20 +44,15 @@ class WeekController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->all();
-        $week = Week::findOrFail($id);
+        try {
+            $input = $request->all();
+            $week = Week::findOrFail($id);
+            $week->update($input);
 
-        $week->update($input);
+            return $this->sendResponse(new WeekResource($week), 'Week updated successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while updating week.', $e->getMessage());
+        }
 
-        return $this->sendResponse(new WeekResource($week), 'Week updated successfully.');
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Week $week)
-    {
-        //
     }
 }

@@ -22,7 +22,7 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(), 409);
+                return $this->sendError('Validation Error.', $validator->errors());
             }
 
             $input = $request->all();
@@ -40,17 +40,21 @@ class AuthController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password]))
-        {
-            $user = Auth::user();
-            $success['token'] = $user->createToken('MyApp')->accessToken;
-            $success['name'] = $user->name;
+        try {
+            if(Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+            {
+                $user = Auth::user();
+                $success['token'] = $user->createToken('MyApp')->accessToken;
+                $success['name'] = $user->name;
 
-            return $this->sendResponse($success, 'User logged in successfully.');
-        }
-        else
-        {
-            return $this->sendError('Unauthorized.', ['error' => 'Unauthorized']);
+                return $this->sendResponse($success, 'User logged in successfully.');
+            }
+            else
+            {
+                return $this->sendError('Unauthorized.', ['error' => 'Unauthorized']);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError('Internal Server Error.', ['error' => $e->getMessage()], 500);
         }
     }
 }

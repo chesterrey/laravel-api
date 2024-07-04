@@ -15,103 +15,143 @@ class ExerciseController extends Controller
     //
     public function index(): JsonResponse
     {
-        return $this->sendResponse(ExerciseResource::collection(Exercise::all()), 'Exercises retrieved successfully.');
+        try {
+
+            $user = auth()->user();
+            $trainingCycles = $user->trainingCycles;
+            $trainingBlocks = $trainingCycles->map(function ($trainingCycle) {
+                return $trainingCycle->trainingBlocks;
+            })->flatten();
+            $trainingDays = $trainingBlocks->map(function ($trainingBlock) {
+                return $trainingBlock->trainingDays;
+            })->flatten();
+            $weeks = $trainingDays->map(function ($trainingDay) {
+                return $trainingDay->weeks;
+            })->flatten();
+
+            $exercises = $weeks->map(function ($week) {
+                return $week->exercises;
+            })->flatten();
+
+            return $this->sendResponse(ExerciseResource::collection($exercises), 'Exercises retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while retrieving exercises.', $e->getMessage());
+        }
     }
 
     public function store(Request $request): JsonResponse
     {
-        $input = $request->all();
+        try {
 
-        $validator = Validator::make($input, [
-            'week_id' => 'required',
-            'name' => 'required',
-            'strength' => 'required',
-            'rpe' => 'required',
-        ]);
+            $input = $request->all();
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            $validator = Validator::make($input, [
+                'week_id' => 'required',
+                'name' => 'required',
+                'strength' => 'required',
+                'rpe' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+
+            $week = Week::findOrFail($input['week_id']);
+            $trainingDay = $week->trainingDay;
+            $trainingBlock = $trainingDay->trainingBlock;
+            $trainingCycle = $trainingBlock->trainingCycle;
+
+            if ($trainingCycle->user_id !== auth()->id()) {
+                return $this->sendError('Unauthorized.', ['You are not authorized to create an exercise for this training cycle.']);
+            }
+
+            $exercise = Exercise::create($input);
+
+
+
+            return $this->sendResponse(new ExerciseResource($exercise), 'Exercise created successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while creating exercise.', $e->getMessage());
         }
-
-        $week = Week::findOrFail($input['week_id']);
-        $trainingDay = $week->trainingDay;
-        $trainingBlock = $trainingDay->trainingBlock;
-        $trainingCycle = $trainingBlock->trainingCycle;
-
-        if ($trainingCycle->user_id !== auth()->id()) {
-            return $this->sendError('Unauthorized.', ['You are not authorized to create an exercise for this training cycle.']);
-        }
-
-        $exercise = Exercise::create($input);
-
-
-
-        return $this->sendResponse(new ExerciseResource($exercise), 'Exercise created successfully.');
     }
 
     public function show($id): JsonResponse
     {
-        $exercise = Exercise::findOrFail($id);
+        try {
+            $exercise = Exercise::findOrFail($id);
 
-        return $this->sendResponse(new ExerciseResource($exercise), 'Exercise retrieved successfully.');
+            return $this->sendResponse(new ExerciseResource($exercise), 'Exercise retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while retrieving exercise.', $e->getMessage());
+        }
     }
 
     public function update(Request $request, $id): JsonResponse
     {
-        $input = $request->all();
+        try {
 
-        if (!isset($input['name']) && !isset($input['strength']) && !isset($input['rpe'])) {
-            return $this->sendError('Validation Error.', ['Name, strength, or rpe is required.']);
+            $input = $request->all();
+
+            if (!isset($input['name']) && !isset($input['strength']) && !isset($input['rpe'])) {
+                return $this->sendError('Validation Error.', ['Name, strength, or rpe is required.']);
+            }
+
+
+            $exercise = Exercise::findOrFail($id);
+
+            $week = Week::findOrFail($exercise->week_id);
+            $trainingDay = $week->trainingDay;
+            $trainingBlock = $trainingDay->trainingBlock;
+            $trainingCycle = $trainingBlock->trainingCycle;
+
+            if ($trainingCycle->user_id !== auth()->id()) {
+                return $this->sendError('Unauthorized.', ['You are not authorized to update this exercise.']);
+            }
+
+            if (isset($input['name'])) {
+                $exercise->name = $input['name'];
+            }
+
+            if (isset($input['strength'])) {
+                $exercise->strength = $input['strength'];
+            }
+
+            if (isset($input['rpe'])) {
+                $exercise->rpe = $input['rpe'];
+            }
+
+            if (isset($input['muscle_group'])) {
+                $exercise->muscle_group = $input['muscle_group'];
+            }
+
+            $exercise->save();
+
+            return $this->sendResponse(new ExerciseResource($exercise), 'Exercise updated successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while updating exercise.', $e->getMessage());
         }
-
-
-        $exercise = Exercise::findOrFail($id);
-
-        $week = Week::findOrFail($exercise->week_id);
-        $trainingDay = $week->trainingDay;
-        $trainingBlock = $trainingDay->trainingBlock;
-        $trainingCycle = $trainingBlock->trainingCycle;
-
-        if ($trainingCycle->user_id !== auth()->id()) {
-            return $this->sendError('Unauthorized.', ['You are not authorized to update this exercise.']);
-        }
-
-        if (isset($input['name'])) {
-            $exercise->name = $input['name'];
-        }
-
-        if (isset($input['strength'])) {
-            $exercise->strength = $input['strength'];
-        }
-
-        if (isset($input['rpe'])) {
-            $exercise->rpe = $input['rpe'];
-        }
-
-        if (isset($input['muscle_group'])) {
-            $exercise->muscle_group = $input['muscle_group'];
-        }
-
-        $exercise->save();
-
-        return $this->sendResponse(new ExerciseResource($exercise), 'Exercise updated successfully.');
     }
 
     public function destroy($id): JsonResponse
     {
-        $exercise = Exercise::findOrFail($id);
+        try {
 
-        $week = Week::findOrFail($exercise->week_id);
-        $trainingDay = $week->trainingDay;
-        $trainingBlock = $trainingDay->trainingBlock;
-        $trainingCycle = $trainingBlock->trainingCycle;
+            $exercise = Exercise::findOrFail($id);
 
-        if ($trainingCycle->user_id !== auth()->id()) {
-            return $this->sendError('Unauthorized.', ['You are not authorized to delete this exercise.']);
+            $week = Week::findOrFail($exercise->week_id);
+            $trainingDay = $week->trainingDay;
+            $trainingBlock = $trainingDay->trainingBlock;
+            $trainingCycle = $trainingBlock->trainingCycle;
+
+            if ($trainingCycle->user_id !== auth()->id()) {
+                return $this->sendError('Unauthorized.', ['You are not authorized to delete this exercise.']);
+            }
+
+            $exercise->delete();
+
+            return $this->sendResponse([], 'Exercise deleted successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error occurred while deleting exercise.', $e->getMessage());
         }
-
-        $exercise->delete();
-
-        return $this->sendResponse([], 'Exercise deleted successfully.');
     }
 }
