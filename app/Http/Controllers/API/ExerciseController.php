@@ -25,8 +25,11 @@ class ExerciseController extends Controller
             $trainingDays = $trainingBlocks->map(function ($trainingBlock) {
                 return $trainingBlock->trainingDays;
             })->flatten();
+            // $weeks = $trainingDays->map(function ($trainingDay) {
+            //     return $trainingDay->weeks;
+            // })->flatten();
             $weeks = $trainingDays->map(function ($trainingDay) {
-                return $trainingDay->weeks;
+                return $trainingDay->weeks->where('done', true);
             })->flatten();
 
             $exercises = $weeks->map(function ($week) {
