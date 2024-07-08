@@ -21,6 +21,7 @@ class ExerciseSetResource extends JsonResource
             'load' => $this->load,
             'reps' => $this->reps,
             'logged' => $this->logged,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
