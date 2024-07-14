@@ -44,7 +44,7 @@ class TrainingBlockController extends Controller
             if($trainingCycle->user_id != auth()->user()->id){
                 return $this->sendError('Unauthorized.', ['You do not have access to this training cycle.']);
             }
-            $trainingBlocksCount = $trainingCycle->trainingBlocks->count();
+            $trainingBlocksCount = $trainingCycle->trainingBlocks->last()->order ?? 0;
             $input['order'] = $trainingBlocksCount + 1;
 
             $validator = Validator::make($input, [
