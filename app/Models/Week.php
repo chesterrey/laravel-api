@@ -15,7 +15,8 @@ class Week extends Model
         'week_number',
         'training_day_id',
         'deload',
-        'done'
+        'done',
+        'date_completed',
     ];
 
     protected $casts = [

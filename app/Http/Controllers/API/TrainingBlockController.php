@@ -82,27 +82,28 @@ class TrainingBlockController extends Controller
                             'done' => false,
                         ]
                     );
+                }
 
-                    foreach($trainingDay['exercises'] as $exercise){
-                        $newExercise = $newWeek->exercises()->create(
+                $firstWeek = $newTrainingDay->weeks()->first();
+                foreach($trainingDay['exercises'] as $exercise){
+                    $newExercise = $firstWeek->exercises()->create(
+                        [
+                            'name' => $exercise['name'],
+                            'strength' => $exercise['strength'],
+                            'muscle_group' => $exercise['muscle_group'],
+                            'rpe' => 6,
+                        ]
+                    );
+
+                    for ($j = 1; $j <= 3; $j++) {
+                        $newExercise->sets()->create(
                             [
-                                'name' => $exercise['name'],
-                                'strength' => $exercise['strength'],
-                                'muscle_group' => $exercise['muscle_group'],
-                                'rpe' => 6,
+                                'set_number' => $j,
+                                'reps' => null,
+                                'load' => null,
+                                'logged' => false,
                             ]
                         );
-
-                        for ($j = 1; $j <= 3; $j++) {
-                            $newExercise->sets()->create(
-                                [
-                                    'set_number' => $j,
-                                    'reps' => null,
-                                    'load' => null,
-                                    'logged' => false,
-                                ]
-                            );
-                        }
                     }
                 }
             }
