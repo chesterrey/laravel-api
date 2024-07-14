@@ -56,24 +56,25 @@ class WeekController extends Controller
 
                 if ($week->week_number < $trainingDay->weeks->count()) {
                     $nextWeek = $trainingDay->weeks()->where('week_number', $week->week_number + 1)->first();
-                    foreach ($week->exercises as $exercise) {
-                        $newExercise = $nextWeek->exercises()->create([
-                            'name' => $exercise['name'],
-                            'strength' => $exercise['strength'],
-                            'muscle_group' => $exercise['muscle_group'],
-                            'rpe' => $exercise['rpe'],
-                        ]);
 
-                        foreach ($exercise->sets as $set) {
-                            $newExercise->sets()->create([
-                                'set_number' => $set['set_number'],
-                                'reps' => null,
-                                'load' => null,
-                                'logged' => false,
+                    if ($nextWeek->exercises->count() <= 0) {
+                        foreach ($week->exercises as $exercise) {
+                            $newExercise = $nextWeek->exercises()->create([
+                                'name' => $exercise['name'],
+                                'strength' => $exercise['strength'],
+                                'muscle_group' => $exercise['muscle_group'],
+                                'rpe' => $exercise['rpe'],
                             ]);
+
+                            foreach ($exercise->sets as $set) {
+                                $newExercise->sets()->create([
+                                    'set_number' => $set['set_number'],
+                                    'reps' => null,
+                                    'load' => null,
+                                    'logged' => false,
+                                ]);
+                            }
                         }
-
-
                     }
                 }
 
