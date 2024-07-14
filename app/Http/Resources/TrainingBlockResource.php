@@ -50,6 +50,7 @@ class TrainingBlockResource extends JsonResource
                             }),
                             'created_at' => $week->created_at,
                             'updated_at' => $week->updated_at,
+                            'date_completed' => $week->date_completed,
                         ];
                     }),
                 ];
